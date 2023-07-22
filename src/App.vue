@@ -13,17 +13,23 @@ const results = reactive({
   icon: "",
 });
 
-const getWeather = () => {
+const getWeather = (city) => {
   axios
     .get(
-      "https://api.weatherapi.com/v1/current.json?key=1ebb115188054f369fa11205232103&q=London&aqi=no"
+      `https://api.weatherapi.com/v1/current.json?key=1ebb115188054f369fa11205232103&q=${city}&aqi=no`
     )
-    .then((res) => console.log(res));
+    .then((res) => {
+      (results.country = res.data.location.country),
+        (results.cityName = res.data.location.name),
+        (results.temperature = res.data.current.temp_c),
+        (results.conditionText = res.data.current.condition.text),
+        (results.icon = res.data.current.condition.icon);
+    });
 };
 </script>
 
 <template>
   <Title />
   <Form @submit-form="getWeather" />
-  <Results />
+  <Results :results="results" />
 </template>
